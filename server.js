@@ -1,5 +1,5 @@
-dotenv.config();
 import dotenv from "dotenv";
+dotenv.config();
 
 import express from "express";
 import { connectToBD } from "./database/db.js";

@@ -1,10 +1,12 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 import mongoose from "mongoose";
 
 export const connectToBD = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://mangenakate_db_user:kikinto123@cluster0.fatvzyr.mongodb.net/library_db?retryWrites=true&w=majority&appName=Cluster0"
-    );
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("MongoDB is connected successfully");
   } catch (error) {
     console.error("MongoDB connection failed", error);
