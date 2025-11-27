@@ -64,10 +64,17 @@ export const updateBook = async (req, res) => {
   try {
     const updatedFormBookData = req.body;
     const currentBookId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(currentBookId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid book ID format",
+      });
+    }
     const updatedBook = await Book.findByIdAndUpdate(
       currentBookId,
       updatedFormBookData,
-      { new: true }
+      { new: true, runValidators: true }
     );
     if (!updatedBook) {
       return res.status(404).json({
@@ -81,7 +88,7 @@ export const updateBook = async (req, res) => {
       data: updatedBook,
     });
   } catch (error) {
-    console.error("Could not get books", error);
+    console.error("Updating book failed", error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
