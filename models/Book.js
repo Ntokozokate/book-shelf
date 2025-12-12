@@ -8,9 +8,18 @@ const bookSchema = new mongoose.Schema({
     maxlength: [50, "Book title cannot be more that 50 characters"],
   },
   author: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
     required: [true, "author name is required "],
+    ref: "Author",
+  },
+  genre: {
+    type: String,
+    required: [true, "Genre type is required"],
     trim: true,
+  },
+  price: {
+    type: Number,
+    required: true,
   },
   year: {
     type: Number,

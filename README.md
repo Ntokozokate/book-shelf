@@ -1,4 +1,4 @@
-# Book Shelf API
+# Book Shelf API and analysis
 
 A simple Node.js + Express + MongoDB CRUD backend for managing a collection of books. This project was built strictly as a backend practice app with no frontend.
 
@@ -13,14 +13,13 @@ Update book details. PUT /api/books/update/:id
 Delete a book by ID. DELETE /api/books/delete/:id
 MongoDB Atlas integration
 
+# Authentication controller
+
 # Running the Project
 
-1. Install dependencies:
-   npm install
-2. Start development server:
-   npm run dev
-3. Start production server:
-   npm start
+1. Install dependencies:npm install
+2. Start development server:npm run dev
+3. Start production server:npm start
 
 The server runs on:
 
