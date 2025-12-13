@@ -5,7 +5,7 @@ import { success } from "zod";
 export const getAllBooks = async (req, res) => {
   try {
     //pagination
-    const page = parseInt(req.query.page) || 2;
+    const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
@@ -138,7 +138,7 @@ export const calculateAvgBookPrice = async (req, res) => {
   }
 };
 
-export const AvgBookPricePerGenre = async (req, res) => {
+export const avgBookPricePerGenre = async (req, res) => {
   try {
     const allBookPrice = await Book.aggregate([
       {
@@ -160,7 +160,7 @@ export const AvgBookPricePerGenre = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Calculated everage price",
+      message: "Calculated everage price per genre",
       data: allBookPrice,
     });
   } catch (error) {

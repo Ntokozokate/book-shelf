@@ -2,7 +2,7 @@ import express from "express";
 import {
   addManyBooks,
   addNewBook,
-  AvgBookPricePerGenre,
+  avgBookPricePerGenre,
   calculateAvgBookPrice,
   deleteBook,
   getAllBooks,
@@ -18,7 +18,7 @@ router.get("/get", getAllBooks); // work
 router.get("/get/:id", getOneBookById);
 router.post("/addMany", addManyBooks);
 router.get("/getAvgPrice", calculateAvgBookPrice);
-router.get("/getAvgPricePerGenre", AvgBookPricePerGenre);
+router.get("/getAvgPricePerGenre", avgBookPricePerGenre);
 router.get("/mostExpensiveBooks", mostExpensiveBooks);
 //router.get("/getAvgPricePerGenre", AvgBookPricePerGenre);
 router.post("/add", addNewBook); // we work with the req.body, modify it to enter the DB safely

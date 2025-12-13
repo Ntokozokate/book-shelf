@@ -44,9 +44,17 @@ export const createAuthor = async (req, res) => {
 export const addManyAuthors = async (req, res) => {
   try {
     const authorArrays = req.body;
+    if (!Array.isArray(req.body)) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body should be an array of authors",
+      });
+    }
     const newAuthors = await Author.insertMany(authorArrays);
 
-    return res.status(201).json({ message: "Mass authors added" });
+    return res
+      .status(201)
+      .json({ message: "Mass authors added", data: newAuthors });
   } catch (error) {
     console.error("Could not create Authors", error);
     res.status(500).json({
