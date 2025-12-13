@@ -1,5 +1,8 @@
 import express from "express";
-import { createAuthor } from "../controllers/author.controller.js";
+import {
+  addManyAuthors,
+  createAuthor,
+} from "../controllers/author.controller.js";
 
 //add author
 //get all authors
@@ -8,5 +11,6 @@ import { createAuthor } from "../controllers/author.controller.js";
 const router = express.Router();
 
 router.post("/add", createAuthor);
+router.post("/addMany", addManyAuthors);
 
 export default router;

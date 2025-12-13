@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Author } from "../models/Author.js";
 
 //add author to db
@@ -33,11 +34,24 @@ export const createAuthor = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Could not create new Author");
+    console.error("Could not create new Author", error);
     res.status(500).json({
       success: false,
       message: "Author not created",
-      error,
+    });
+  }
+};
+export const addManyAuthors = async (req, res) => {
+  try {
+    const authorArrays = req.body;
+    const newAuthors = await Author.insertMany(authorArrays);
+
+    return res.status(201).json({ message: "Mass authors added" });
+  } catch (error) {
+    console.error("Could not create Authors", error);
+    res.status(500).json({
+      success: false,
+      message: "Authors not created",
     });
   }
 };
@@ -45,24 +59,16 @@ export const createAuthor = async (req, res) => {
 export const getAuthors = async (req, res) => {
   try {
     const allAuthors = await Author.find({});
-    if (allAuthors.length > 0) {
-      return res.status(200).json({
-        success: true,
-        message: "fetched all available Authors",
-        data: allAuthors,
-      });
-    } else {
-      return res.status(200).json({
-        success: false,
-        message: "database is empty",
-      });
-    }
+    return res.status(200).json({
+      success: true,
+      message: "fetched all available Authors",
+      data: allAuthors,
+    });
   } catch (error) {
-    console.error("Could not get Authors");
+    console.error("Could not get Authors", error);
     res.status(500).json({
       success: false,
       message: "failed to get authors",
-      error,
     });
   }
 };
@@ -71,6 +77,11 @@ export const getAuthorById = async (req, res) => {
   try {
     const authorId = req.params.id;
 
+    if (!mongoose.isValidObjectId(authorId)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid author" });
+    }
     //get the author from DB
     const author = await Author.findById(authorId);
     if (!author) {
@@ -85,11 +96,10 @@ export const getAuthorById = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Could not get Author");
+    console.error("Could not get Author", error);
     res.status(500).json({
       success: false,
       message: "failed to get author",
-      error,
     });
   }
 };

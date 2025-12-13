@@ -25,6 +25,6 @@ export const generateTokens = (userId) => {
     );
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new Error("Token generation failed");
+    throw new Error(`Token generation failed: ${error.message}`);
   }
 };

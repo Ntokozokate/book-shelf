@@ -1,8 +1,37 @@
+import mongoose from "mongoose";
 import { Book } from "../models/Book.js";
+import { success } from "zod";
 
 export const getAllBooks = async (req, res) => {
   try {
-    const allBooks = await Book.find({});
+    //pagination
+    const page = parseInt(req.query.page) || 2;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    //const allBooks = await Book.find({}); red
+    const allBooks = await Book.aggregate([
+      {
+        $sort: {
+          createdAt: 1,
+        },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: limit,
+      },
+      {
+        $project: {
+          title: 1,
+          author: 1,
+          yearPublished: 1,
+          year: 1,
+          _id: 0,
+        },
+      },
+    ]);
     if (allBooks?.length > 0) {
       res.status(200).json({
         success: true,
@@ -24,21 +53,159 @@ export const getAllBooks = async (req, res) => {
 export const getOneBookById = async (req, res) => {
   try {
     const currentBookId = req.params.id;
-    const bookDetailsById = await Book.findById(currentBookId);
+    //const bookDetailsById = await Book.findById(currentBookId).populate(
+    //  "author"
+    //);
+    const bookWithAuthor = await Book.aggregate([
+      {
+        $match: {
+          _id: new mongoose.Types.ObjectId(currentBookId),
+        },
+      },
 
-    if (!bookDetailsById) {
+      {
+        $lookup: {
+          from: "authors",
+          localField: "author",
+          foreignField: "_id",
+          as: "bookWithAuthorDetails",
+        },
+      },
+      {
+        $unwind: "$bookWithAuthorDetails",
+      },
+      {
+        $project: {
+          ///we are returning the book and choosing the fields we want
+          title: 1,
+          genre: 1,
+          authorName: "$bookWithAuthorDetails.name",
+          _id: 0,
+        },
+      },
+    ]);
+
+    if (!bookWithAuthor || bookWithAuthor.length === 0) {
       return res.status(404).json({
         success: false,
         message: `Id: ${currentBookId} was not found, Try with a different ID`,
       });
     }
-    res.status(200).json({ success: true, data: bookDetailsById });
+    return res.status(200).json({
+      success: true,
+      data: bookWithAuthor,
+    });
   } catch (error) {
     console.error("Could not get book", error);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 
+export const calculateAvgBookPrice = async (req, res) => {
+  try {
+    const allBookPrice = await Book.aggregate([
+      {
+        $group: {
+          _id: null,
+          avgBookPrice: {
+            $avg: "$price",
+          },
+        },
+      },
+      {
+        $project: {
+          avgBookPrice: {
+            $round: ["$avgBookPrice", 2],
+          },
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Calculated everage price",
+      data: allBookPrice,
+    });
+  } catch (error) {
+    console.error("Could not make calculation", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const AvgBookPricePerGenre = async (req, res) => {
+  try {
+    const allBookPrice = await Book.aggregate([
+      {
+        $group: {
+          _id: "$genre",
+          avgBookPrice: {
+            $avg: "$price",
+          },
+        },
+      },
+      {
+        $project: {
+          avgBookPrice: {
+            $round: ["$avgBookPrice", 2],
+          },
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Calculated everage price",
+      data: allBookPrice,
+    });
+  } catch (error) {
+    console.error("Could not make calculation", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const mostExpensiveBooks = async (req, res) => {
+  try {
+    const allBookPrice = await Book.aggregate([
+      {
+        $sort: {
+          price: -1,
+        },
+      },
+      {
+        $limit: 3,
+      },
+      {
+        $project: {
+          _id: 0,
+          title: 1,
+          genre: 1,
+          price: 1,
+        },
+      },
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      message: "Calculated most expensive books",
+      data: allBookPrice,
+    });
+  } catch (error) {
+    console.error("Could not make calculation", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 export const addNewBook = async (req, res) => {
   try {
     const newBookFormData = req.body;
@@ -52,7 +219,35 @@ export const addNewBook = async (req, res) => {
     }
   } catch (error) {
     console.error("Could not add new Book", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+export const addManyBooks = async (req, res) => {
+  try {
+    const BooksArray = req.body;
+    if (!Array.isArray(req.body)) {
+      return res.status(400).json({
+        success: false,
+        message: "Request body should be an array of books",
+      });
+    }
+
+    const savedbooksArray = await Book.insertMany(BooksArray);
+
+    return res.status(201).json({
+      success: true,
+      message: "Books saved successfully",
+      data: savedbooksArray,
+    });
+  } catch (error) {
+    console.error("Could not add new Books", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
   }
 };
 //1 declare the body of future content
