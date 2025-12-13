@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
     email: {
-      trpe: String,
+      type: String,
       required: true,
       unique: true,
       trim: true,
@@ -29,4 +29,5 @@ const UserSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
 export const User = mongoose.model("User", UserSchema);
