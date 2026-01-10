@@ -49,7 +49,7 @@ export const signUp = async (req, res) => {
       password: hashedPassword,
     });
 
-    const { accessToken, refreshToken } = generateTokens(user._id);
+    const { accessToken, refreshToken } = generateTokens(user);
 
     //hash token before saving token
     const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
@@ -71,9 +71,7 @@ export const signUp = async (req, res) => {
       accessToken,
       data: {
         username: user.username,
-        email: user.email,
         role: user.role,
-        id: user._id,
       },
     });
   } catch (error) {
@@ -135,10 +133,11 @@ export const login = async (req, res) => {
       accessToken,
       data: {
         username: user.username,
+        role: user.role,
       },
     });
   } catch (error) {
-    console.log("Error signing up", error);
+    console.log("Error logging in", error);
     res.status(500).json({
       success: false,
       message: "Some error occured",
@@ -148,9 +147,13 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("refreshToken");
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
-    await User.findByIdAndUpdate(req.userId, { refreshToken: null });
+    await User.findByIdAndUpdate(req.user?.id, { refreshToken: null });
     return res.status(200).json({ success: true });
   } catch (error) {
     console.log("Error logging out", error);
