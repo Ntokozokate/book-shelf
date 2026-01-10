@@ -7,3 +7,31 @@
 
 <!-- 401 - i dont know who you are
      403 - i know who you are but you arent allowed here -->
+
+<!-- //i dont know how to go about this but i need authors to be able to log in with their accounts.
+// I dont know if the end point should be from the author routes or the users routs.
+
+//option 1* AUTHOR-ROUTES -> author registers (name, country, id, password, email)
+// -> they can register and login, access all the get routes,
+// they cannot add or delete anything as only the admin can do that,
+// but they have a route that allows them to just add more books, deleting books is handled by the admin,
+// create a route that allows them to edit their bio(assuming that add the bio field)
+
+//option 2* USER-ROUTES- user registers and has a tag of author-> create -->
+
+Method,Endpoint,Description
+POST,/api/auth/signup,Register a new user & receive tokens.
+POST,/api/auth/login,Authenticate user & receive tokens.
+POST,/api/auth/logout,Clear cookies and invalidate session.
+Method,Endpoint,Access Level
+GET,/api/books/get,Authenticated User
+POST,/api/books/add,Admin Only
+DELETE,/api/books/delete/:id,Admin Only
+
+# Future Roadmap
+
+Token Rotation: Implementing refresh token rotation to detect theft.
+
+Blacklisting: Using Redis to store revoked tokens.
+
+MFA: Adding Multi-Factor Authentication for Admin accounts.
