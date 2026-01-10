@@ -1,28 +1,9 @@
-## 12 December 2025 - ZOD
+### IMPORTANT NOTES
 
-Zod validates any type of input, including:
+# pass in role in payload for access
 
-✔ Strings
+- to protect the route the flow goes like this get userId->check it in dd -> check role -> allow or deny acces. checking the db twice in one reqest. Instead pass both role and userId in th accesstoken payload at once.
+- improves perfomance
 
-✔ Numbers
-✔ Emails
-✔ Password rules
-✔ URLs
-✔ Arrays
-✔ Objects
-✔ Nested objects
-✔ Enums
-✔ Dates
-✔ Optional fields
-✔ Default values
-✔ Custom logic
-
-## Zod is designed to:
-
-Validate the input coming from the client
-
-Ensure only the correct fields/shape/data types enter your system
-
-Protect your DB and API
-
-Give clear error messages to the user
+<!-- 401 - i dont know who you are
+     403 - i know who you are but you arent allowed here -->

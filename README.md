@@ -1,17 +1,31 @@
 # Book Shelf API and analysis
 
-A simple Node.js + Express + MongoDB CRUD backend for managing a collection of books. This project was built strictly as a backend practice app with no frontend.
+A simple Node.js + Express + MongoDB CRUD + Authentication and Authorization backend for managing a collection of books. This project was built strictly as a backend practice app with no frontend.
 
-### Node.js, Express.js, MongoDb, Mongoose
+## Project Goal
 
-# API endpoints
+This project was built to deeply practice MongoDB and backend system design.
+The focus was data modeling, querying, analytics, and access control.
+Practice Role based Access to different routes to the book-shelf.
 
-Add new book. POST /api/books/add
-Get all books. GET /api/books/get
-Get single book by ID. GET /api/books/get/:id
-Update book details. PUT /api/books/update/:id
-Delete a book by ID. DELETE /api/books/delete/:id
-MongoDB Atlas integration
+### Node.js, Express.js, MongoDb and Mongoose, bcrypt, jsonwebtokens,
+
+## Key Concepts Practiced
+
+- Pagination & filtering
+- MongoDB aggregation pipelines
+- Referencing and lookups
+- Role-based access control
+- Secure JWT authentication
+- API design & error handling
+
+## Authentication & Authorization
+
+Users have different roles:
+
+- USER: read-only access
+- ADMIN: full book & author management
+- AUTHOR (planned): limited profile editing
 
 # Authentication controller
 

@@ -10,19 +10,23 @@ import {
   mostExpensiveBooks,
   updateBook,
 } from "../controllers/book.controller.js";
+import { adminOnly } from "../middleware/adminOnly.middleware.js";
+import { protectRoute } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
-//Book related routes
-router.get("/get", getAllBooks); // work
-router.get("/get/:id", getOneBookById);
-router.post("/addMany", addManyBooks);
-router.get("/getAvgPrice", calculateAvgBookPrice);
-router.get("/getAvgPricePerGenre", avgBookPricePerGenre);
-router.get("/mostExpensiveBooks", mostExpensiveBooks);
-//router.get("/getAvgPricePerGenre", AvgBookPricePerGenre);
-router.post("/add", addNewBook); // we work with the req.body, modify it to enter the DB safely
-router.put("/update/:id", updateBook);
-router.delete("/delete/:id", deleteBook);
+// 1. STATS ROUTES (Specific paths first!)
+router.get("/getAvgPrice", protectRoute, calculateAvgBookPrice);
+router.get("/getAvgPricePerGenre", protectRoute, avgBookPricePerGenre);
+router.get("/mostExpensiveBooks", protectRoute, mostExpensiveBooks);
 
+// 2. GENERAL GET ROUTES
+router.get("/get", protectRoute, getAllBooks);
+router.get("/get/:id", protectRoute, getOneBookById);
+
+// 3. ADMIN ONLY ROUTES (Require both middlewares)
+router.post("/add", protectRoute, adminOnly, addNewBook);
+router.post("/addMany", protectRoute, adminOnly, addManyBooks);
+router.put("/update/:id", protectRoute, adminOnly, updateBook);
+router.delete("/delete/:id", protectRoute, adminOnly, deleteBook);
 export default router;
