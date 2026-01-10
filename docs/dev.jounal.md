@@ -18,3 +18,20 @@
 // create a route that allows them to edit their bio(assuming that add the bio field)
 
 //option 2* USER-ROUTES- user registers and has a tag of author-> create -->
+
+Method,Endpoint,Description
+POST,/api/auth/signup,Register a new user & receive tokens.
+POST,/api/auth/login,Authenticate user & receive tokens.
+POST,/api/auth/logout,Clear cookies and invalidate session.
+Method,Endpoint,Access Level
+GET,/api/books/get,Authenticated User
+POST,/api/books/add,Admin Only
+DELETE,/api/books/delete/:id,Admin Only
+
+# Future Roadmap
+
+Token Rotation: Implementing refresh token rotation to detect theft.
+
+Blacklisting: Using Redis to store revoked tokens.
+
+MFA: Adding Multi-Factor Authentication for Admin accounts.
