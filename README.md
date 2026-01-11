@@ -4,7 +4,7 @@ API, Analysis, Authentication and Authorization
 
 A simple Node.js + Express + MongoDB CRUD + Authentication and Authorization backend for managing a collection of books. This project was built strictly as a backend practice app with no frontend.
 
-## Project Goal
+## Project  Goal
 
 This project was built to deeply practice MongoDB and backend system design.
 The focus was data modeling, querying, analytics, and access control.
